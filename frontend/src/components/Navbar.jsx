@@ -1,10 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FileText, Sparkles, Download, Sun, Moon } from 'lucide-react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FileText, Sparkles, Download, Sun, Moon, LogOut, User, ChevronDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
     const { theme, toggleTheme } = useTheme();
+    const { user, isAuthenticated, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Close dropdown on outside click
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleLogout = async () => {
+        setShowDropdown(false);
+        await logout();
+        navigate('/login');
+    };
 
     return (
         <nav className="h-16 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
@@ -47,11 +69,77 @@ const Navbar = () => {
                         <span>Export</span>
                     </button>
 
-                    {/* Generate Resume CTA */}
-                    <button className="btn-cta text-white px-5 py-2.5 text-sm font-semibold">
-                        <FileText size={16} />
-                        <span>Generate Resume</span>
-                    </button>
+                    {isAuthenticated ? (
+                        /* User Dropdown */
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => setShowDropdown(!showDropdown)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            >
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-sm font-bold">
+                                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                </div>
+                                <span className="hidden md:block text-sm font-medium text-heading max-w-[100px] truncate">
+                                    {user?.name}
+                                </span>
+                                <ChevronDown
+                                    size={14}
+                                    className={`text-subtext transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+
+                            {showDropdown && (
+                                <div className="absolute right-0 mt-2 w-56 bg-surface border border-border rounded-xl shadow-2xl shadow-black/20 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="px-4 py-3 border-b border-border">
+                                        <p className="text-sm font-semibold text-heading truncate">{user?.name}</p>
+                                        <p className="text-xs text-subtext truncate">{user?.email}</p>
+                                    </div>
+                                    <div className="py-1">
+                                        <button
+                                            onClick={() => { setShowDropdown(false); navigate('/dashboard'); }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                        >
+                                            <FileText size={16} className="text-subtext" />
+                                            My Resumes
+                                        </button>
+                                        <button
+                                            onClick={() => { setShowDropdown(false); }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                        >
+                                            <User size={16} className="text-subtext" />
+                                            Profile
+                                        </button>
+                                    </div>
+                                    <div className="border-t border-border py-1">
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                                        >
+                                            <LogOut size={16} />
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        /* Login / Signup Buttons */
+                        <div className="flex items-center gap-2">
+                            <Link
+                                to="/login"
+                                className="px-4 py-2.5 text-sm font-medium text-heading hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all"
+                            >
+                                Sign In
+                            </Link>
+                            <Link
+                                to="/register"
+                                className="btn-cta text-white px-5 py-2.5 text-sm font-semibold"
+                            >
+                                <FileText size={16} />
+                                <span>Get Started</span>
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </nav>

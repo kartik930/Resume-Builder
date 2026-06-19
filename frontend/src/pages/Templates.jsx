@@ -80,6 +80,19 @@ const categories = [
     'Executive / Senior',
 ];
 
+const getTemplateParam = (id) => {
+    if (id === 'minimal-classic' || id === 'elegant-neutral') return 'classic';
+    if (id === 'creative-bright') return 'accent';
+    if (id === 'corporate-blue') return 'boxed';
+    return 'ats'; // default
+};
+
+const recIds = {
+    'Student Launch': 'student-launch',
+    'Corporate Blue': 'corporate-blue',
+    'Modern ATS': 'modern-ats'
+};
+
 const Templates = () => {
     const [activeCategory, setActiveCategory] = useState('All Templates');
 
@@ -180,7 +193,7 @@ const Templates = () => {
                                         <span className="text-[10px] px-2 py-1 rounded-full bg-surface border border-border text-subtext">{tpl.category}</span>
                                     </div>
                                     <Link
-                                        to="/editor"
+                                        to={`/editor?template=${getTemplateParam(tpl.id)}`}
                                         className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-light transition-colors"
                                     >
                                         Use Template
@@ -209,7 +222,10 @@ const Templates = () => {
                             <div key={rec.title} className={`p-5 rounded-2xl border ${rec.border} ${rec.bg} shadow-sm flex flex-col gap-3 hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.03)] transition-colors`}>
                                 <div className={`text-xs font-semibold uppercase tracking-[0.1rem] ${rec.text}`}>{rec.title}</div>
                                 <div className="text-lg font-semibold text-heading">{rec.name}</div>
-                                <Link to="/editor" className="text-sm font-semibold text-primary hover:text-primary-light inline-flex items-center gap-1">
+                                <Link 
+                                    to={`/editor?template=${getTemplateParam(recIds[rec.name])}`} 
+                                    className="text-sm font-semibold text-primary hover:text-primary-light inline-flex items-center gap-1"
+                                >
                                     Use Template <ArrowRight size={14} />
                                 </Link>
                             </div>

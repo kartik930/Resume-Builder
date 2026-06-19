@@ -32,56 +32,11 @@ export const ResumeProvider = ({ children }) => {
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/e398cb77-0811-4917-a097-f173ee72c7ad', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sessionId: 'debug-session',
-                        runId: 'pre-fix',
-                        hypothesisId: 'B',
-                        location: 'ResumeContext.jsx:init',
-                        message: 'Loaded resumeData from localStorage',
-                        data: { savedLength: saved.length },
-                        timestamp: Date.now()
-                    })
-                }).catch(() => { });
-                // #endregion
                 return createSafeResumeData(parsed);
             } catch (error) {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/e398cb77-0811-4917-a097-f173ee72c7ad', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sessionId: 'debug-session',
-                        runId: 'pre-fix',
-                        hypothesisId: 'B',
-                        location: 'ResumeContext.jsx:init',
-                        message: 'Failed to parse localStorage resumeData',
-                        data: { error: String(error) },
-                        timestamp: Date.now()
-                    })
-                }).catch(() => { });
-                // #endregion
                 return createSafeResumeData(null);
             }
         }
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e398cb77-0811-4917-a097-f173ee72c7ad', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sessionId: 'debug-session',
-                runId: 'pre-fix',
-                hypothesisId: 'B',
-                location: 'ResumeContext.jsx:init',
-                message: 'No saved resumeData, using sampleData',
-                data: {},
-                timestamp: Date.now()
-            })
-        }).catch(() => { });
-        // #endregion
         return createSafeResumeData(null);
     });
 
@@ -146,40 +101,7 @@ export const ResumeProvider = ({ children }) => {
             ...prev,
             [section]: value
         }));
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e398cb77-0811-4917-a097-f173ee72c7ad', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sessionId: 'debug-session',
-                runId: 'pre-fix',
-                hypothesisId: 'A',
-                location: 'ResumeContext.jsx:updateResumeData',
-                message: 'updateResumeData invoked',
-                data: { section, hasValue: value !== undefined },
-                timestamp: Date.now()
-            })
-        }).catch(() => { });
-        // #endregion
     };
-
-    useEffect(() => {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e398cb77-0811-4917-a097-f173ee72c7ad', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sessionId: 'debug-session',
-                runId: 'pre-fix',
-                hypothesisId: 'D',
-                location: 'ResumeContext.jsx:provider',
-                message: 'Provider value keys snapshot',
-                data: { valueKeys: ['resumeData', 'updatePersonalInfo', 'updateSectionItem', 'addSectionItem', 'removeSectionItem', 'updateSkills', 'updateListSection', 'setResumeData', 'updateResumeData'] },
-                timestamp: Date.now()
-            })
-        }).catch(() => { });
-        // #endregion
-    }, []);
 
     return (
         <ResumeContext.Provider value={{
@@ -197,7 +119,3 @@ export const ResumeProvider = ({ children }) => {
         </ResumeContext.Provider>
     );
 };
-
-
-
-
