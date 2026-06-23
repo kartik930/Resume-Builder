@@ -89,4 +89,8 @@ export const resumeAPI = {
     delete: (id) => api.delete(`/resume/${id}`),
 };
 
+export const aiAPI = {
+    optimize: (data) => api.post('/ai/optimize', data),
+};
+
 export default api;

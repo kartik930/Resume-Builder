@@ -4,7 +4,7 @@ import { FileText, Sparkles, Download, Sun, Moon, LogOut, User, ChevronDown } fr
 import { useTheme } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
 
-const Navbar = () => {
+const Navbar = ({ onAIOptimize }) => {
     const { theme, toggleTheme } = useTheme();
     const { user, isAuthenticated, logout } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -58,10 +58,15 @@ const Navbar = () => {
                     </button>
 
                     {/* AI Optimize */}
-                    <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-all">
-                        <Sparkles size={16} />
-                        <span>AI Optimize</span>
-                    </button>
+                    {onAIOptimize && (
+                        <button 
+                            onClick={onAIOptimize}
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-all"
+                        >
+                            <Sparkles size={16} />
+                            <span>AI Optimize</span>
+                        </button>
+                    )}
 
                     {/* Export */}
                     <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-subtext hover:text-heading hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-all">

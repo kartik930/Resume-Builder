@@ -9,6 +9,7 @@ import HorizontalSectionsNav from '../components/HorizontalSectionsNav';
 import { Plus, Trash2, ZoomIn, ZoomOut, RotateCcw, Download, FileText, Loader2, X, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { resumeAPI } from '../services/api';
 import ATSWarningsPanel from '../components/ATSWarningsPanel';
+import AIOptimizeModal from '../components/AIOptimizeModal';
 
 const Editor = () => {
     const { resumeData, updateResumeData, setResumeData } = useResumeData();
@@ -32,6 +33,7 @@ const Editor = () => {
     const [exportFilename, setExportFilename] = useState('my-resume');
     const [exportQuality, setExportQuality] = useState(2); // 1 = fast, 2 = high, 3 = ultra
     const [showAnalysis, setShowAnalysis] = useState(true);
+    const [showAIModal, setShowAIModal] = useState(false);
 
     // Resizable layout states
     const containerRef = useRef(null);
@@ -406,7 +408,7 @@ const Editor = () => {
 
     return (
         <div className="h-screen bg-background flex flex-col overflow-hidden text-text">
-            <Navbar />
+            <Navbar onAIOptimize={() => setShowAIModal(true)} />
             <HorizontalSectionsNav activeSection={activeSection} onSectionChange={setActiveSection} />
 
             <div className="flex-1 min-h-0 overflow-hidden">
@@ -1167,6 +1169,13 @@ const Editor = () => {
                     </div>
                 </div>
             )}
+
+            <AIOptimizeModal
+                isOpen={showAIModal}
+                onClose={() => setShowAIModal(false)}
+                resumeData={resumeData}
+                onApply={setResumeData}
+            />
         </div>
     );
 };
